@@ -10,6 +10,7 @@
 from PyQt4 import QtCore, QtGui
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
+import time
 from PyQt4.QtWebKit import *
 from urllib.request import urlretrieve
 import sys
@@ -34,14 +35,11 @@ class Ui_Form(object):
     def setupUi(self, Form):
         Form.setObjectName(_fromUtf8("Form"))
         Form.resize(566, 347)
-        #self.Lista_Formato_Calidad = QtGui.QListView(Form)
-        #self.Lista_Formato_Calidad.setGeometry(QtCore.QRect(390, 50, 161, 201))
-        #self.Lista_Formato_Calidad.setObjectName(_fromUtf8("Lista_Formato_Calidad"))
         self.Lista_Formato_Calidad = QtGui.QListWidget(Form)
         self.Lista_Formato_Calidad.setGeometry(QtCore.QRect(390, 50, 161, 201))
         self.Lista_Formato_Calidad.setObjectName(_fromUtf8("Lista_Formato_Calidad"))
         self.Label_Descargando_info = QtGui.QLabel(Form)
-        self.Label_Descargando_info.setGeometry(QtCore.QRect(10, 260, 371, 21))
+        self.Label_Descargando_info.setGeometry(QtCore.QRect(10, 260, 100, 21))
         font = QtGui.QFont()
         font.setBold(True)
         font.setWeight(75)
@@ -134,8 +132,6 @@ class Ui_Form(object):
         font.setWeight(75)
         self.label.setFont(font)
         self.label.setObjectName(_fromUtf8("label"))
-        rutaruta=''
-
         def verformatos():
             self.Lista_Formato_Calidad.clear()
             self.Label_Descargando_info.setText(str("Cargando..."))
@@ -146,13 +142,13 @@ class Ui_Form(object):
                     RR= s.resolution
                     EE = s.extension
                     if EE=='m4a':
-                        print(RR, EE, s.url)
+                        #print(RR, EE, s.url)
                         self.Lista_Formato_Calidad.addItem(str('Audio' +' '+ 'mp3'))
                     else:
                         if RR=='1920x1080':
                             self.Lista_Formato_Calidad.addItem(str('1920x1080' +' '+ 'mp4'))
                         else:
-                            print(RR, EE, s.url)
+                            #print(RR, EE, s.url)
                             self.Lista_Formato_Calidad.addItem(str(RR +' '+ EE))
 
             self.Label_Video_Titulo.setText(str(video.title))
@@ -172,13 +168,6 @@ class Ui_Form(object):
             exten=posfinal[1]
             url=str(self.LineText_Video_Ruta.text())
             descargar(url,reso,exten)
-            #ruta = subprocess.Popen(['python','des.py',reso,forma,url],shell=True)
-            #proc = subprocess.Popen(['python','urldes.py',reso,forma,url], shell=True,stdout=subprocess.PIPE)
-            #salida = proc.communicate()[0]
-            #print(salida)
-            #self.Label_Video_Ruta_Descarga.setText(str(salida))
-               #self.Label_Video_Ruta_Descarga.setText(str(line))
-
 
         def descargar(url,reso,exten):
         # create a video instance
@@ -190,16 +179,27 @@ class Ui_Form(object):
                     archi=s.url
                     nombre=s.title
                     e=s.mediatype
-            #def mycb(total, recvd, raio, rate, eta):
-            #   etados = "%.2f" % round(eta,2)
-            #  recvddos = "%.2f" % round(((recvd/1024)/1024),2)
-            # print ('recibido:'+(str(recvddos))+'Mb','velocidad:'+(str(int(rate)))+'/kbps','tiempo restante:'+(str(etados))+'s')
-
+            velocidad_descarga=0
+            tiempo_faltante=0
             def funcionprogreso(bloque, tamano_bloque, tamano_total):
                 cant_descargada = bloque * tamano_bloque
-                self.Label_Video_Ruta_Descarga.setText(str('\rCantidad descargada: %s bytes / %s bytes totales' % (cant_descargada, tamano_total)))
-            resultado=nombre+'.'+e # nombre del archivo y la rutqa tambien
-            archivo = urlretrieve(archi, resultado,reporthook=funcionprogreso) # el archi es la ruta del video
+                cant_descargada_MB = round(((cant_descargada/1024)/1024),2)
+                tamano_total_MB = round(((tamano_total/1024)/1024),2)
+
+                cant_descargada_KB = (cant_descargada/1024)
+                tamano_total_KB = (tamano_total/1024)
+
+                elapsed = time.clock()
+                if elapsed>0:
+                    velocidad_descarga=round((cant_descargada_KB/elapsed),2)
+
+                if velocidad_descarga>0:
+                    tiempo_faltante=abs(round(((tamano_total_KB - cant_descargada_KB) / velocidad_descarga),1))
+
+
+                    self.Label_Descargando_info.setText(str('\r %s MB / %s MB - %s kbps/s - %s seg' % (cant_descargada_MB, tamano_total_MB,velocidad_descarga,tiempo_faltante)))
+            resultado=nombre+'.'+e # nombre del archivo y la ruta tambien
+            archivo = urlretrieve(archi, resultado,reporthook=funcionprogreso) # el archivo es la ruta del video
 
 
 
