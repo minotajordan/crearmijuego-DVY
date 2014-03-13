@@ -203,11 +203,14 @@ class Ui_MainWindow(object):
             t.start()
 
         def mostrar():
+
             tama=str(self.Lista_Formato_Calidad.currentItem().text())
             posfinal=tama.split(' ')
             reso=posfinal[0]
             exten=posfinal[1]
             url=str(self.LineText_Video_Ruta.text())
+            # mensaje para Label " Estado de la descarga"
+            self.Label_Descargando_info_estado.setText("Cargando Descarga...")
             descargar(url,reso,exten)
 
         def descargar(url,reso,exten):
@@ -219,10 +222,16 @@ class Ui_MainWindow(object):
                 if s.resolution==reso and s.extension==exten:
                     archi=s.url
                     nombre=s.title
-                    e=s.mediatype
+                    e=s.extension
             velocidad_descarga=0
             tiempo_faltante=0
+            tiempo_faltante_s=0
+            tiempo_faltante_m=0
+            tiempo_faltante_h=0
+            t0 = time.time()
+            self.Label_Descargando_info_estado.setText("Descargando...")
             def funcionprogreso(bloque, tamano_bloque, tamano_total):
+
                 cant_descargada = bloque * tamano_bloque
                 cant_descargada_MB = round(((cant_descargada/1024)/1024),2)
                 tamano_total_MB = round(((tamano_total/1024)/1024),2)
@@ -230,23 +239,21 @@ class Ui_MainWindow(object):
                 cant_descargada_KB = (cant_descargada/1024)
                 tamano_total_KB = (tamano_total/1024)
 
-                elapsed = time.clock()
-
+                elapsed = time.time() - t0
                 if elapsed>0:
                     velocidad_descarga=round((cant_descargada_KB/elapsed),2)
-                    
+
                 if velocidad_descarga>0:
                     tiempo_faltante=abs(round(((tamano_total_KB - cant_descargada_KB) / velocidad_descarga),1))
+                    tiempo_faltante_s=abs(int(tiempo_faltante%60))
+                    tiempo_faltante_m=abs(int(tiempo_faltante/60))
+                    tiempo_faltante_h=abs(int(tiempo_faltante/3600))
                     # Labels para informacion de la descarga INICIO
-                    self.Label_Descargando_info_total.setText(str('\rTamaño Total : %s MB - Descargado : %s MB - Velocidad : %s/kbps - Tiempo : %s S' % (tamano_total_MB, cant_descargada_MB,velocidad_descarga,tiempo_faltante)))
+                    self.Label_Descargando_info_total.setText(str('\rTotal : %s MB - Descargado : %s MB - Velocidad : %s/kbps - Tiempo : %s H %s M %s S' % (tamano_total_MB, cant_descargada_MB,velocidad_descarga,tiempo_faltante_h,tiempo_faltante_m,tiempo_faltante_s)))
                     # Labels para informacion de la descarga FIN
-
             resultado=nombre+'.'+e # nombre del archivo y la ruta tambien
             archivo = urlretrieve(archi, resultado,reporthook=funcionprogreso) # el archivo es la ruta del video
-
-
-
-
+            self.Label_Descargando_info_estado.setText("Descargando con Exit :D")
         def descargarenlace():
             t2 = threading.Thread(target=mostrar)
             t2.start()
