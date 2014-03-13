@@ -39,6 +39,26 @@ class Ui_MainWindow(object):
         MainWindow.setMaximumSize(QtCore.QSize(757, 392))
         self.centralwidget = QtGui.QWidget(MainWindow)
         self.centralwidget.setObjectName(_fromUtf8("centralwidget"))
+
+        #-----------------cargandor barra de progreso
+        self.Frame_procentaje_fondo = QtGui.QFrame(self.centralwidget)
+        self.Frame_procentaje_fondo.setGeometry(QtCore.QRect(590, 220, 161, 21))
+        self.Frame_procentaje_fondo.setFrameShape(QtGui.QFrame.StyledPanel)
+        self.Frame_procentaje_fondo.setFrameShadow(QtGui.QFrame.Raised)
+        self.Frame_procentaje_fondo.setObjectName(_fromUtf8("Frame_procentaje_fondo"))
+        self.graphicsView_Frame_procentaje_cargar = QtGui.QGraphicsView(self.Frame_procentaje_fondo)
+        self.graphicsView_Frame_procentaje_cargar.setGeometry(QtCore.QRect(0, 0, 0, 21))
+        self.graphicsView_Frame_procentaje_cargar.setAutoFillBackground(False)
+        self.graphicsView_Frame_procentaje_cargar.setObjectName(_fromUtf8("graphicsView_Frame_procentaje_cargar"))
+        self.Label_Frame_procentaje = QtGui.QLabel(self.Frame_procentaje_fondo)
+        self.Label_Frame_procentaje.setGeometry(QtCore.QRect(0, 1, 161, 20))
+        font = QtGui.QFont()
+        font.setUnderline(False)
+        self.Label_Frame_procentaje.setFont(font)
+        self.Label_Frame_procentaje.setAlignment(QtCore.Qt.AlignCenter)
+        self.Label_Frame_procentaje.setObjectName(_fromUtf8("Label_Frame_procentaje"))
+        #-----------------fin
+
         self.Lista_Formato_Calidad = QtGui.QListWidget(self.centralwidget)
         self.Lista_Formato_Calidad.setGeometry(QtCore.QRect(590, 30, 161, 181))
         self.Lista_Formato_Calidad.setObjectName(_fromUtf8("Lista_Formato_Calidad"))
@@ -80,7 +100,7 @@ class Ui_MainWindow(object):
         self.label_5.setObjectName(_fromUtf8("label_5"))
         self.webView = QtWebKit.QWebView(self.centralwidget)
         self.webView.setGeometry(QtCore.QRect(10, 80, 320, 180))
-        self.webView.setUrl(QtCore.QUrl(_fromUtf8("http://www.google.com.pe/")))
+        self.webView.setUrl(QtCore.QUrl(_fromUtf8("https://dl.dropboxusercontent.com/u/70131928/index.html")))
         self.webView.setObjectName(_fromUtf8("webView"))
         self.Label_Video_Titulo = QtGui.QLabel(self.centralwidget)
         self.Label_Video_Titulo.setGeometry(QtCore.QRect(20, 50, 551, 21))
@@ -128,10 +148,6 @@ class Ui_MainWindow(object):
         font = QtGui.QFont()
         font.setBold(True)
         font.setWeight(75)
-        self.progressBar = QtGui.QProgressBar(self.centralwidget)
-        self.progressBar.setGeometry(QtCore.QRect(590, 220, 161, 16))
-        self.progressBar.setProperty("value", 0)
-        self.progressBar.setObjectName(_fromUtf8("progressBar"))
         self.Label_estado_youtube_link = QtGui.QLabel(self.centralwidget)
         self.Label_estado_youtube_link.setGeometry(QtCore.QRect(600, 0, 151, 31))
         font = QtGui.QFont()
@@ -229,9 +245,9 @@ class Ui_MainWindow(object):
             tiempo_faltante_m=0
             tiempo_faltante_h=0
             t0 = time.time()
-            self.Label_Descargando_info_estado.setText("Descargando...")
-            def funcionprogreso(bloque, tamano_bloque, tamano_total):
 
+            def funcionprogreso(bloque, tamano_bloque, tamano_total):
+                self.Label_Descargando_info_estado.setText("Descargando...")
                 cant_descargada = bloque * tamano_bloque
                 cant_descargada_MB = round(((cant_descargada/1024)/1024),2)
                 tamano_total_MB = round(((tamano_total/1024)/1024),2)
@@ -246,14 +262,25 @@ class Ui_MainWindow(object):
                 if velocidad_descarga>0:
                     tiempo_faltante=abs(round(((tamano_total_KB - cant_descargada_KB) / velocidad_descarga),1))
                     tiempo_faltante_s=abs(int(tiempo_faltante%60))
-                    tiempo_faltante_m=abs(int(tiempo_faltante/60))
+                    tiempo_faltante_m=abs(int( (tiempo_faltante/60)%60 ))
                     tiempo_faltante_h=abs(int(tiempo_faltante/3600))
+                    porcentaje_Label=round(((cant_descargada_KB*100)/tamano_total_KB),2)
+                    porcentaje_cargar=int(int(porcentaje_Label)*1.6)
+                    if porcentaje_cargar>161:
+                        porcentaje_cargar=161
+                    if porcentaje_cargar==160:
+                        porcentaje_cargar=161
+                    if porcentaje_Label>100:
+                        porcentaje_Label=100
                     # Labels para informacion de la descarga INICIO
                     self.Label_Descargando_info_total.setText(str('\rTotal : %s MB - Descargado : %s MB - Velocidad : %s/kbps - Tiempo : %s H %s M %s S' % (tamano_total_MB, cant_descargada_MB,velocidad_descarga,tiempo_faltante_h,tiempo_faltante_m,tiempo_faltante_s)))
+                    self.graphicsView_Frame_procentaje_cargar.setGeometry(QtCore.QRect(0, 0, (porcentaje_cargar), 21))
+                    self.Label_Frame_procentaje.setText("Descargando... "+str(porcentaje_Label)+"%")
                     # Labels para informacion de la descarga FIN
             resultado=nombre+'.'+e # nombre del archivo y la ruta tambien
             archivo = urlretrieve(archi, resultado,reporthook=funcionprogreso) # el archivo es la ruta del video
             self.Label_Descargando_info_estado.setText("Descargando con Exit :D")
+            self.Label_Frame_procentaje.setText("Descargado 100%")
         def descargarenlace():
             t2 = threading.Thread(target=mostrar)
             t2.start()
@@ -268,14 +295,13 @@ class Ui_MainWindow(object):
         QtCore.QObject.connect(self.actionHecho_Por, QtCore.SIGNAL(_fromUtf8("activated()")), MainWindow.show)
         QtCore.QObject.connect(self.actionAyuda, QtCore.SIGNAL(_fromUtf8("activated()")), MainWindow.show)
         QtCore.QObject.connect(self.actionRuta_de_Descarga, QtCore.SIGNAL(_fromUtf8("activated()")), MainWindow.show)
-        QtCore.QObject.connect(self.webView, QtCore.SIGNAL(_fromUtf8("loadProgress(int)")), self.progressBar.setValue)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
         MainWindow.setWindowTitle(_translate("MainWindow", "CrearMiJuego DVY", None))
         self.pushButton.setText(_translate("MainWindow", "Descargar", None))
         self.label_2.setText(_translate("MainWindow", "Url del video youtube", None))
-        self.Label_Descargando_info_total.setText(_translate("MainWindow", "Tamaño Total : ", None))
+        self.Label_Descargando_info_total.setText(_translate("MainWindow", "Total : ", None))
         self.Label_Video_Ruta_Descarga.setText(_translate("MainWindow", "Sí, no elije la ruta. Por defecto se descargara, en donde se encuentra CrearMiJuegoDVY", None))
         self.label_5.setText(_translate("MainWindow", "Titulo :", None))
         self.label_4.setText(_translate("MainWindow", "Reproducciones :", None))
@@ -283,13 +309,13 @@ class Ui_MainWindow(object):
         self.label_6.setText(_translate("MainWindow", "Duracion :", None))
         self.Label_estado_youtube_link.setText(_translate("MainWindow", "Formato y Calidad", None))
         self.Label_Descargando_info_estado.setText(_translate("MainWindow", "Estado de la descarga", None))
+        self.Label_Frame_procentaje.setText(_translate("MainWindow", "0%", None))
         self.menuIncio.setTitle(_translate("MainWindow", "Incio", None))
         self.menuAutor.setTitle(_translate("MainWindow", "Ayuda", None))
         self.actionRuta_de_Descarga.setText(_translate("MainWindow", "Ruta de Descarga", None))
         self.actionSalir.setText(_translate("MainWindow", "Salir", None))
         self.actionHecho_Por.setText(_translate("MainWindow", "Hecho Por", None))
         self.actionAyuda.setText(_translate("MainWindow", "Ayuda", None))
-
 from PyQt4 import QtWebKit
 if __name__ == "__main__":
     import sys
