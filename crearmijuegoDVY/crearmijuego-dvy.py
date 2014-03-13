@@ -226,7 +226,7 @@ class Ui_MainWindow(object):
             exten=posfinal[1]
             url=str(self.LineText_Video_Ruta.text())
             # mensaje para Label " Estado de la descarga"
-            self.Label_Descargando_info_estado.setText("Cargando Descarga...")
+            self.Label_Descargando_info_estado.setText("Preparando Descarga...")
             descargar(url,reso,exten)
 
         def descargar(url,reso,exten):
@@ -236,51 +236,30 @@ class Ui_MainWindow(object):
             streams = videoD.allstreams
             for s in streams:
                 if s.resolution==reso and s.extension==exten:
-                    archi=s.url
-                    nombre=s.title
-                    e=s.extension
-            velocidad_descarga=0
-            tiempo_faltante=0
-            tiempo_faltante_s=0
-            tiempo_faltante_m=0
-            tiempo_faltante_h=0
-            t0 = time.time()
+                    #archi=s.url
+                    #nombre=s.title
+                    #e=s.extension
+                    best=s
+            self.Label_Descargando_info_estado.setText("Descargando...")
+            def des(total, recvd, ratio, rate, eta):
+                #print(recvd, ratio, eta)
+                velocidad_descarga=rate
+                cantidad_descargado=recvd
+                tiempo_faltante=eta
+                tota_peso=total
+                porcentaje=ratio
+                tiempo_faltante_s=abs(int(tiempo_faltante%60))
+                tiempo_faltante_m=abs(int( (tiempo_faltante/60)%60 ))
+                tiempo_faltante_h=abs(int(tiempo_faltante/3600))
 
-            def funcionprogreso(bloque, tamano_bloque, tamano_total):
-                self.Label_Descargando_info_estado.setText("Descargando...")
-                cant_descargada = bloque * tamano_bloque
-                cant_descargada_MB = round(((cant_descargada/1024)/1024),2)
-                tamano_total_MB = round(((tamano_total/1024)/1024),2)
+                tiempo=str(tiempo_faltante_h)+'H '+str(tiempo_faltante_m)+'M '+str(tiempo_faltante_s)+'S'
+                tamano_total_MB = round(((tota_peso/1024)/1024),2)
+                cant_descargada_MB = round(((cantidad_descargado/1024)/1024),2)
+                self.Label_Descargando_info_total.setText(str('Peso Total : '+str(tamano_total_MB)+'MB '+' Tiempo : '+str(tiempo)+' Recibido : '+str(cant_descargada_MB)+' MB Velocidad : '+str( round(velocidad_descarga,2) )+' Kbps'))
+            filename = "" + best.title +"."+ best.extension
+            best.download(quiet=False, filepath=filename,callback=des)
+            self.Label_Descargando_info_estado.setText("Descarganda completa")
 
-                cant_descargada_KB = (cant_descargada/1024)
-                tamano_total_KB = (tamano_total/1024)
-
-                elapsed = time.time() - t0
-                if elapsed>0:
-                    velocidad_descarga=round((cant_descargada_KB/elapsed),2)
-
-                if velocidad_descarga>0:
-                    tiempo_faltante=abs(round(((tamano_total_KB - cant_descargada_KB) / velocidad_descarga),1))
-                    tiempo_faltante_s=abs(int(tiempo_faltante%60))
-                    tiempo_faltante_m=abs(int( (tiempo_faltante/60)%60 ))
-                    tiempo_faltante_h=abs(int(tiempo_faltante/3600))
-                    porcentaje_Label=round(((cant_descargada_KB*100)/tamano_total_KB),2)
-                    porcentaje_cargar=int(int(porcentaje_Label)*1.6)
-                    if porcentaje_cargar>161:
-                        porcentaje_cargar=161
-                    if porcentaje_cargar==160:
-                        porcentaje_cargar=161
-                    if porcentaje_Label>100:
-                        porcentaje_Label=100
-                    # Labels para informacion de la descarga INICIO
-                    self.Label_Descargando_info_total.setText(str('\rTotal : %s MB - Descargado : %s MB - Velocidad : %s/kbps - Tiempo : %s H %s M %s S' % (tamano_total_MB, cant_descargada_MB,velocidad_descarga,tiempo_faltante_h,tiempo_faltante_m,tiempo_faltante_s)))
-                    self.graphicsView_Frame_procentaje_cargar.setGeometry(QtCore.QRect(0, 0, (porcentaje_cargar), 21))
-                    self.Label_Frame_procentaje.setText("Descargando... "+str(porcentaje_Label)+"%")
-                    # Labels para informacion de la descarga FIN
-            resultado=nombre+'.'+e # nombre del archivo y la ruta tambien
-            archivo = urlretrieve(archi, resultado,reporthook=funcionprogreso) # el archivo es la ruta del video
-            self.Label_Descargando_info_estado.setText("Descargando con Exit :D")
-            self.Label_Frame_procentaje.setText("Descargado 100%")
         def descargarenlace():
             t2 = threading.Thread(target=mostrar)
             t2.start()
@@ -301,7 +280,7 @@ class Ui_MainWindow(object):
         MainWindow.setWindowTitle(_translate("MainWindow", "CrearMiJuego DVY", None))
         self.pushButton.setText(_translate("MainWindow", "Descargar", None))
         self.label_2.setText(_translate("MainWindow", "Url del video youtube", None))
-        self.Label_Descargando_info_total.setText(_translate("MainWindow", "Total : ", None))
+        self.Label_Descargando_info_total.setText(_translate("MainWindow", "Tiempo : ", None))
         self.Label_Video_Ruta_Descarga.setText(_translate("MainWindow", "Sí, no elije la ruta. Por defecto se descargara, en donde se encuentra CrearMiJuegoDVY", None))
         self.label_5.setText(_translate("MainWindow", "Titulo :", None))
         self.label_4.setText(_translate("MainWindow", "Reproducciones :", None))
