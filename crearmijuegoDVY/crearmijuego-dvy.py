@@ -220,7 +220,7 @@ class Ui_MainWindow(object):
 
         def mostrar():
 
-            tama=str(self.Lista_Formato_Calidad.currentItem().text())
+            tama=(self.Lista_Formato_Calidad.currentItem().text())
             posfinal=tama.split(' ')
             reso=posfinal[0]
             exten=posfinal[1]
@@ -234,6 +234,13 @@ class Ui_MainWindow(object):
         # get certain attributes
             videoD = Pafy(url)
             streams = videoD.allstreams
+            if reso=='Audio':
+                reso='0x0'
+                exten='m4a'
+            else:
+                print()
+
+
             for s in streams:
                 if s.resolution==reso and s.extension==exten:
                     #archi=s.url
@@ -256,14 +263,47 @@ class Ui_MainWindow(object):
                 tamano_total_MB = round(((tota_peso/1024)/1024),2)
                 cant_descargada_MB = round(((cantidad_descargado/1024)/1024),2)
                 self.Label_Descargando_info_total.setText(str('Peso Total : '+str(tamano_total_MB)+'MB '+' Tiempo : '+str(tiempo)+' Recibido : '+str(cant_descargada_MB)+' MB Velocidad : '+str( round(velocidad_descarga,2) )+' Kbps'))
-            filename = "" + best.title +"."+ best.extension
+            titulo = best.title
+            titulo = str(titulo).replace('.','')
+            titulo = str(titulo).replace('"','')
+            titulo = str(titulo).replace(':','')
+            titulo = str(titulo).replace('_','')
+            titulo = str(titulo).replace('-','')
+            titulo = str(titulo).replace(';','')
+            titulo = str(titulo).replace('|','')
+            titulo = str(titulo).replace("'",'')
+            titulo = str(titulo).replace("+",'')
+            titulo = str(titulo).replace("!",'')
+            titulo = str(titulo).replace("/",'')
+            titulo = str(titulo).replace("\\",'')
+            titulo = str(titulo).replace("*",'')
+            titulo = str(titulo).replace("#",'')
+            titulo = str(titulo).replace("%",'')
+            titulo = str(titulo).replace("&",'')
+            titulo = str(titulo).replace("(",'')
+            titulo = str(titulo).replace(")",'')
+            titulo = str(titulo).replace("?",'')
+            titulo = str(titulo).replace("多",'')
+            titulo = str(titulo).replace("臓",'')
+            titulo = str(titulo).replace("[",'')
+            titulo = str(titulo).replace("]",'')
+            titulo = str(titulo).replace("{",'')
+            titulo = str(titulo).replace("}",'')
+            titulo = str(titulo).replace("=",'')
+            titulo = str(titulo).replace("~",'')
+            titulo = str(titulo).replace("<",'')
+            titulo = str(titulo).replace(">",'')
+            filename = "" + titulo +"."+ best.extension
             best.download(quiet=False, filepath=filename,callback=des)
+
             self.Label_Descargando_info_estado.setText("Descarganda completa")
 
         def descargarenlace():
             t2 = threading.Thread(target=mostrar)
             t2.start()
-
+        def convertirmp3():
+            archivomp3 = ["ffmpeg", "-i", "audio.m4a", "-y", "audioconvetido.mp3"]   #convierte a mp3
+            subprocess.call(archivomp3)
       # --------------------------------------fin de metodos--------------------------------------------
 
 
