@@ -1,0 +1,180 @@
+body {
+  background-color: #00569F;
+  color: #FFF;
+  font-family: Arial, sans-serif;
+  font-size: 10pt;
+  t
+  margin: none;
+}
+img {
+  border: 0;
+}
+
+table {
+  border-collapse: collapse;
+}
+
+th, td {
+  padding: 0;
+
+  text-align: left;
+}
+a{text-decoration:none;}
+a {
+  color: #FFF;
+  font-size:12px;
+}
+
+a:active {
+  color: #FFF;
+}
+
+a:hover {
+  color: #FFF;
+}
+
+h1 {
+  font-size: x-large;
+  margin-top: 0px;
+  margin-bottom: 5px;
+}
+
+h2 {
+  font-size: large;
+}
+
+h3 {
+  font-size: medium;
+}
+
+h4 {
+  font-size: small;
+}
+
+form {
+  display: inline;
+  margin: 0;
+  padding: 0;
+}
+
+li {
+  margin-bottom: 0.25em;
+}
+
+pre, code {
+  color: #FFF;
+  font-family: "bogus font here", monospace;
+  font-size: 100%;
+}
+
+pre {
+  border: 1px solid silver;
+  background-color: #f5f5f5;
+  padding: 0.5em;
+  overflow: auto;
+  margin: 2em;
+}
+
+pre ins {
+  color: #FFF;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+/* "Selected" links */
+
+a.selected, .selected a, .selected {
+  color: #FFF;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+a.selected:visited, .selected a:visited {
+  color: #FFF;
+}
+
+p.videoDescription {
+  display: none;
+  color:#FFF;
+  font-size: small;
+  margin: 0;
+  padding: 0;
+}
+
+.videoList td {
+  padding-bottom: 0px; 
+  padding-right: 2px; 
+}
+
+#titleBar {
+  border: 1px solid silver;
+  background-color: #FFF;
+  font-size: large;
+  font-weight: bold;
+  margin: 0;
+  padding: 0;
+  padding-top: 5px;
+  padding-bottom: 10px;
+  padding-left: 10px;
+  padding-right: 10px;
+  margin-top: 5px;
+  margin-bottom: 15px;
+}
+#userVideos {
+    display: none;
+}
+#titleText {
+  float: left;
+}
+
+#searchBox {
+  float: right;
+}
+
+#mainSearchBox {
+  background-color: #FFF;
+  border: 1px solid silver;
+  width: 250;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+#searchResults {
+  width: 65%;
+}
+
+#searchResultsListColumn {
+  width: 100%;
+}
+
+#searchResultsVideoColumn {
+  width: 100%;
+  
+}
+#videoPlayer {
+height: 75%;
+text-align:center;
+}
+.show-menu {
+    color:#FFF;
+	border-left:1px solid #CCC;
+    display: none;
+    width: 250px;
+    padding: 5px 5px;
+    position: absolute;
+    top: 0;
+	right:0;
+	bottom:0;
+	float:right;
+	overflow:auto;
+}
+.input-search{
+background-color:#00B1EB;
+border:2px solid #000;
+border-radius:5px;
+padding:4px;
+width:100%;
+}
+.main{text-align:center;}

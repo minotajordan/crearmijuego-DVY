@@ -1,0 +1,41 @@
+<html>
+<head>
+  <title>crearmijuego-DVY</title>
+  <link href="video_browser.css" type="text/css" rel="stylesheet"/>
+  <script src="jquery.js" type="text/javascript"></script>
+  <script src="jquery-migrate.min.js" type="text/javascript"></script>
+  <script src="jquery-ui.js" type="text/javascript"></script>
+  <script src="video_browser.js" type="text/javascript"></script>
+  <script src="../../import/sys/runtime.js"></script>
+</head>
+<body>
+
+<div id="main">
+ 
+  <div id="esconder" style='display:block' class="show-menu left">
+  <form id="searchForm" onsubmit="ytvb.listVideos('all', this.searchTerm.value, 1); return false;">
+        <input class='input-search' name="searchTerm" type="text" placeholder='Buscar'>
+      </form>
+    <div id="searchResultsListColumn">
+      <div id="searchResultsVideoList">
+        <table id="searchResultsVideoListTable">
+        </table>
+      </div>
+      <div id="searchResultsNavigation">
+        <form id="navigationForm">
+          <input type="button" id="previousPageButton" onclick="ytvb.listVideos(ytvb.previousQueryType, ytvb.previousSearchTerm, ytvb.previousPage);" value="Atras" style="display: none;"></input>
+          <input type="button" id="nextPageButton" onclick="ytvb.listVideos(ytvb.previousQueryType, ytvb.previousSearchTerm, ytvb.nextPage);" value="Siguiente" style="display: none;"></input>
+        </form>
+      </div>
+    </div>
+	</div>
+	<div id="searchResults">
+    <div id="searchResultsVideoColumn">
+      <div id="videoPlayer"></div>
+      <div id="relatedVideos"></div>
+      <div id="userVideos"></div>
+    </div> 
+  </div>
+</div>
+</body>
+</html>

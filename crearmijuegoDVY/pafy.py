@@ -679,9 +679,10 @@ class Stream(object):
                 break
 
             if not quiet:
-                status = status_string.format(*progress_stats)
-                sys.stdout.write("\r" + status + ' ' * 4 + "\r")
-                sys.stdout.flush()
+                borrar = 'borrar borrando'
+                #status = status_string.format(*progress_stats)
+                #sys.stdout.write("\r" + status + ' ' * 4 + "\r")
+                #sys.stdout.flush()
 
             if callback:
                 callback(total, *progress_stats)
